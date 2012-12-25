@@ -87,6 +87,11 @@ class EmulateExcel extends CWidget
 		echo  $html . CHtml::closeTag('table');
 	}
 
+	/**
+	 * Определяет формат ячейки по её содержимому
+	 * @param mixed $value значение ячеки
+	 * @return string формат
+	 */
 	protected function getCellFormat($value)
 	{
 		$length = mb_strlen($value, Yii::app()->charset);
