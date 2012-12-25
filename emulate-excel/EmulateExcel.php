@@ -2,9 +2,11 @@
 
 class EmulateExcel extends CWidget
 {
-	/** ����� */
+	/** Текстовый формат ячеки */
 	const CELL_FORMAT_TEXT    = 'format-text';
+	/** Числовой формат ячеки */
 	const CELL_FORMAT_NUMBER  = 'format-number';
+	/** Процентный формат ячеки */
 	const CELL_FORMAT_PERCENT = 'format-percent';
 
 	public $htmlOptions = array();
