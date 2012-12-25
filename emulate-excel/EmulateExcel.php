@@ -2,6 +2,7 @@
 
 class EmulateExcel extends CWidget
 {
+	/** Текст */
 	const CELL_FORMAT_TEXT    = 'format-text';
 	const CELL_FORMAT_NUMBER  = 'format-number';
 	const CELL_FORMAT_PERCENT = 'format-percent';
