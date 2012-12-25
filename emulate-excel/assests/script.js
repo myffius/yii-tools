@@ -1,4 +1,4 @@
-$(document).ready(function(){
+jQuery(document).ready(function(){
     jQuery.fn.clearFormat = function(){
         this.removeClass('format-percent').removeClass('format-number').removeClass('format-text');
     }
