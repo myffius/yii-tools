@@ -25,6 +25,8 @@ class EmulateExcel extends CWidget
 
 	public $showFormulaBar = false;
 	public $resizable = false;
+
+	public $f;
 	public $lockedCells = false;
 	public $dataProvider;
 
