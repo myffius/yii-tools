@@ -1,85 +1,63 @@
 <?php
 
-abstract class LawBase
+class Law
 {
 	/**
 	 * Относительная точность нахождения максимума
 	 */
-	const EPS = 0.001;
+	const EPS = 1;
 
-	protected $_maxTaskCount;
-	protected $_minTaskCount;
-	protected $_peak;
+	protected $_xMax;
+	protected $_xMin;
+	protected $_fMax;
+	/**
+	 * @var FrequencyFunction
+	 */
+	protected $_fFreq;
 
-	abstract function generateTasks($time);
+	//abstract function generateTasks($time);
 
 	/**
 	 * @param $minTaskCount
 	 * @param $maxTaskCount
 	 */
-	public function __construct($minTaskCount, $maxTaskCount)
+	public function __construct($FF, $xMinCellBound, $xMaxCellBound)
 	{
-		$this->_maxTaskCount = $maxTaskCount;
-		$this->_minTaskCount = $minTaskCount;
+		$this->_fFreq = $FF;
+
+		$this->_xMin = $xMinCellBound;
+		$this->_xMax = $xMaxCellBound;
+
+		if ($this->_xMin > $this->_xMax)
+			throw new Exception(get_class($this) . ': xMinCellBound can not be greater, than xMaxCellBound');
+
+		$this->_fMax = $this->_fFreq->getMaxValueOfFunction($this->_xMin, $this->_xMax);
+
+		//если не вызвать функцию Randomize, то при каждом запуске программы TfrGenerator
+		//будет выдавать одну и ту же последовательность
+		rand(0, 1);
 	}
 
 	/**
-	 * Определение максимального значения f(x) в указанном диапазоне.
-	 * Используется метод деления отрезка пополам.
-	 * Метод рассчитан на нахождение максимума только для унимодальных функций
+	 * Генерирует случайную величину, подчиняющуюся закону распределения,
+	 * указанному в функции fFreq
 	 */
-	function getMaxValue($xMinOffset, $xMaxOffset)
+	public function getNewValue()
 	{
-		$yMin  = $xMinOffset;
-		$yMax  = $xMaxOffset;
-		$fLeft = $this->f($yMin);
-		$fRight= $this->f($yMax);
-
-		$return = $this->f(($yMin + $yMax) / 2);
-
-	  	while (abs($return - $fLeft) + abs($return - $fRight) > self::EPS * $return)
-	  	{
-			$x1_4 = (3 * $yMin + $yMax) / 4;
-			$x3_4 = ($yMin + 3 * $yMax) / 4;
-
-			if (($return > $fLeft) && ($return > $fRight))
-			{
-				if ($this->f($x1_4) > $return)
-				{
-					$yMax = ($yMin + $yMax) / 2;
-					$fRight = $return;
-				}
-				else
-				{
-					if ($this->f($x3_4) > $return)
-					{
-			  			$yMin = ($yMin + $yMax) / 2;
-			  			$fLeft = $return;
-					}
-					else
-					{
-			  			$yMin = $x1_4;
-						$fLeft = $this->f($yMin);
-			  			$yMax = $x3_4;
-						$fRight = $this->f($yMax);
-					}
-				}
-			}
-		  	else
-			{
-		  		if ($return < $fLeft)
-		  		{
-					$yMax = ($yMin + $yMax) / 2;
-					$fRight = $return;
-				}
-				else
-				{
-					$yMin = ($yMin + $yMax)/2;
-					$fLeft = $return;
-				}
-			}
-			$return = $this->f(($yMin + $yMax) / 2);
+		do
+		{
+			$newValue = ($this->_xMax - $this->_xMin) * $this->floatRand(0, 100) + $this->_xMin;
 		}
-		return $return
+		while ($this->_fMax * $this->floatRand(0, 100) < $this->_fFreq->f($newValue));
+
+		$return = $newValue;
+		return $return;
+	}
+
+	protected function floatRand($min = null, $max = null)
+	{
+		if ($min === null && $max === null)
+			return mt_rand() / 100;
+		return mt_rand($min, $max) / 100;
 	}
 }
