@@ -249,7 +249,7 @@ function NormalRandom ($ma, $dg)
     return ($ma + $dg * (($u+$v) / 2) * $sum);*/
 
 }
-
+ גפûג
 
 function Gauss($Mx, $Sigma)
 {
